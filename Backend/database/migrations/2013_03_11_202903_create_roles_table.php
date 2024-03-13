@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('rol');
             $table->timestamp('fechacreacion')->useCurrent();
             $table->timestamp('fechamodificacion')->useCurrent();
-            $table->string('usuariocreacion');
-            $table->string('usuariomodificacion');
+            $table->string('usuariocreacion')->default('system');
+            $table->string('usuariomodificacion')->default('system');
             $table->timestamps();
         });
     }

@@ -1,16 +1,28 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {  Route, Routes } from 'react-router';
+// import LoginForm from './Components/LoginForm';
+import Rol from './Components/Dashboard/Rol';
+import MiniDrawer from './Components/Dashboard/MiniDrawer';
 import Dashboard from './Components/Dashboard/Dashboard';
-import LoginForm from './Components/LoginForm';
+import Bitacoras from './Components/Bitacoras/Bitacoras';
+import UsersList from './Components/Gestion_usuarios/UsersList';
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="loginform" element={<LoginForm />} />
-        <Route path="dashboard" element={<Dashboard authorized={true} />} />
-      </Routes>
-    </Router>
-  );
-}
+const App = () => {
+    return (
+        <>
+        <Routes>
+           
+            <Route path='/' element={ <MiniDrawer/>} >
+            <Route path='/usuarios' element={ <UsersList/>} />
+            <Route path='/rol' element={ <Rol/>} />
+            <Route path='/home' element={ <Dashboard/>} />
+            <Route path='/bitacora' element={ <Bitacoras/>} />
+
+
+            </Route>
+        </Routes>
+        
+        </>
+    );
+};
 
 export default App;
