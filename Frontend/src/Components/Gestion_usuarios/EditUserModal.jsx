@@ -4,12 +4,14 @@ import Modal from 'react-modal';
 
 function EditUserModal({ isOpen, user, onSave, onClose }) {
   const [userData, setUserData] = useState({
-    username: user.username || '',
+    name: user.name || '',
     email: user.email || '',
-    empresa: user.empresa || '',
+    primer_apellido: user.primer_apellido || '',
+    segundo_apellido: user.segundo_apellido || '',
+
     telefono: user.telefono || '',
-    role: user.role || '',
-    status: user.status || ''
+    rol_id: user.rol_id || '',
+    estado: user.estado || ''
   });
 
   const handleChange = (e) => {
@@ -57,8 +59,8 @@ function EditUserModal({ isOpen, user, onSave, onClose }) {
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                name="username"
-                value={userData.username}
+                name="name"
+                value={userData.name}
                 onChange={handleChange}
               />
             </div>
@@ -76,13 +78,25 @@ function EditUserModal({ isOpen, user, onSave, onClose }) {
             </div>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="empresa">
-                Nombre de la Empresa:
+                Primer Apellido
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                name="empresa"
-                value={userData.empresa}
+                name="primer_apellido"
+                value={userData.primer_apellido}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="empresa">
+                Segundo Apellido
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                name="segundo_apellido"
+                value={userData.segundo_apellido}
                 onChange={handleChange}
               />
             </div>
@@ -105,31 +119,31 @@ function EditUserModal({ isOpen, user, onSave, onClose }) {
               <select
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 name="role"
-                value={userData.role}
+                value={userData.rol_id}
                 onChange={handleChange}
               >
 
-                <option value="Administrador">Administrador</option>
-                <option value="RespVentasTiendas">RespVentasTiendas</option>
-                <option value="SupervisorComercial">SupervisorComercial</option>
+                <option value="1">Administrador</option>
+                <option value="2">Ventas</option>
+                <option value="3">supervisor</option>
               </select>
             </div>
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="status"
+                htmlFor="estado"
               >
                 Estado:
               </label>
               <select
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                name="status"
-                value={userData.status}
+                name="estado"
+                value={userData.estado}
                 onChange={handleChange}
               >
                 <option value="">Seleciona el estado del cliente</option>
-                <option value="active">active</option>
-                <option value="inactive">inactive</option>
+                <option value="activo">activo</option>
+                <option value="inactivo">inactivo</option>
               </select>
             </div>
           </div>

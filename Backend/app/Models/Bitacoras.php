@@ -10,7 +10,17 @@ class Bitacoras extends Model
     use HasFactory;
 
     protected $fillable = [
-        'bitacora', // Add bitacora to the fillable array
-        // Add other fillable attributes here if needed
+        'navegador', 
+        'fecha',
+        'hora'
     ];
+
+    public static function add($navegador){
+        $bitacora = Bitacoras::create([
+            'navegador' => $navegador,
+            'fecha' =>date('Y-m-d'),
+            'hora' =>date('H:i:s')
+        ]);
+        return $bitacora;
+    }
 }

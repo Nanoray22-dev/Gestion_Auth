@@ -18,9 +18,6 @@ return new class extends Migration
             $table->string('descripcion');
             $table->timestamp('fechacreacion')->useCurrent();
             $table->timestamp('fechamodificacion')->useCurrent();
-            $table->string('usuariocreacion');
-            $table->string('usuariomodificacion');
-
             $table->foreign('pagina_id')->references('id')->on('paginas');
             $table->foreign('rol_id')->references('id')->on('roles');
             $table->timestamps();

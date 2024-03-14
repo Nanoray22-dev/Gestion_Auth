@@ -31,6 +31,29 @@ function Rol() {
 
   return (
     <div>
+      <div className="mt-4">
+      <button
+          onClick={handleAddRol}
+          className="mt-2 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Añadir Rol
+        </button>
+        <label
+          htmlFor="rol"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Nuevo Rol
+        </label>
+        <input
+          type="text"
+          name="rol"
+          id="rol"
+          value={newRol}
+          onChange={(e) => setNewRol(e.target.value)}
+          className="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm"
+        />
+       
+      </div>
       <table className="min-w-full divide-y divide-gray-200">
         {/* Encabezados de la tabla */}
         <table className="min-w-full divide-y divide-gray-200">
@@ -52,7 +75,7 @@ function Rol() {
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Usuario Creación
+                Accion
               </th>
 
             </tr>
@@ -77,28 +100,7 @@ function Rol() {
           </tbody>
         </table>
       </table>
-      <div className="mt-4">
-        <label
-          htmlFor="rol"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Nuevo Rol
-        </label>
-        <input
-          type="text"
-          name="rol"
-          id="rol"
-          value={newRol}
-          onChange={(e) => setNewRol(e.target.value)}
-          className="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm"
-        />
-        <button
-          onClick={handleAddRol}
-          className="mt-2 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Añadir Rol
-        </button>
-      </div>
+      
     </div>
   );
 }

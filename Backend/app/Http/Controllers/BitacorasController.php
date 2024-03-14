@@ -12,7 +12,8 @@ class BitacorasController extends Controller
      */
     public function index()
     {
-        //
+        $bitacora = Bitacoras::all();
+        return response()->json($bitacora);
     }
 
     /**

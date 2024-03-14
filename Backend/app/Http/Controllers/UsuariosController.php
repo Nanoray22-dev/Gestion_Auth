@@ -34,38 +34,30 @@ class UsuariosController extends Controller
      */
     public function store(Request $request)
     {
-        // Validación de la solicitud
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-    
-        // Crear un nuevo usuario
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-    
-        // Verificar si hay un usuario autenticado antes de registrar en la bitácora
-        $userName = Auth::user() ? Auth::user()->name : 'Usuario Desconocido';
-        $userId = Auth::id();
-    
-        // Crear una nueva entrada en la bitácora
-        Bitacoras::create([
-            'bitacora' => 'Nuevo usuario creado: ' . $user->name,
-            'users_id' => $userId,
-            'fecha' => now()->toDateString(),
-            'hora' => now()->toTimeString(),
-            'ip' => $request->ip(),
-            'so' => $request->userAgent(),
-            'navegador' => $request->header('User-Agent'),
-            'usuario' => $userName
-        ]);
-    
-        // Respuesta JSON con el usuario creado
-        return response()->json($user, 201);
+        try {
+            $request->validate([
+                'email' => 'required|email|unique:users',
+            ]);
+            if (empty($request->password)) {
+                $hashedPassword = Hash::make($request->apellido);
+            } else {
+                $hashedPassword = Hash::make($request->password);
+            }
+            $userData = $request->all();
+            $userData['password'] = $hashedPassword;
+            $user = User::create($userData);
+
+            $bitacora = Bitacoras::add("A new user was created with the id: {$user->id}");
+
+            if (!$bitacora) {
+                throw new \Exception();
+            }
+
+            // Respuesta JSON con el usuario creado
+            return response()->json($user, 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al crear el usuario: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -90,47 +82,76 @@ class UsuariosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        try {
+            $request->validate([
+                'name' => 'required',
+                'primer_apellido' => 'required',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'password' => 'nullable|min:6',
+            ]);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($user->id),
-            ],
-            'password' => 'nullable|string|min:6',
-        ]);
+            $userData = $request->except('password');
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
 
-        Bitacoras::create([
-            'bitacora' => 'Usuario actualizado: ' . $user->name,
-            'users_id' => Auth::id(), // ID del usuario autenticado que realizó la acción
-            'fecha' => now()->toDateString(),
-            'hora' => now()->toTimeString(),
-            'ip' => $request->ip(),
-            'so' => $request->userAgent(),
-            'navegador' => $request->header('User-Agent'),
-            'usuario' => Auth::user()->name // Nombre del usuario autenticado que realizó la acción
-        ]);
+            if ($request->filled('password')) {
+                $userData['password'] = Hash::make($request->password);
+            }
 
-        return response()->json($user);
+            $user = User::findOrFail($id);
+            $user->update($userData);
+
+            $bitacora = Bitacoras::add("A user with the id {$user->id} was updated.");
+
+            if (!$bitacora) {
+                throw new \Exception('Error creating bitacora.');
+            }
+
+            return response()->json($user);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
-        return response()->json(null, 204);
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            $bitacora = Bitacoras::add("A user with the id {$user->id} was deleted.");
+            if (!$bitacora) {
+                throw new \Exception('Error creating.');
+            }
+            return response()->json(null, 204);
+        } catch (\Exception $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
+    }
+
+    public function Acceso(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'estado' => 'required|in:activo,inactivo'
+            ]);
+
+            $newStatus = $request->input('estado');
+
+            $user = User::findOrFail($id);
+            $user->status = $newStatus;
+            $user->save();
+
+            $cambios = ($newStatus == 'active') ? 'activo' : 'inactivo';
+            $Bitacoras = Bitacoras::add("The user with the id: {$user->id} was $cambios.");
+
+            if (!$Bitacoras) {
+                throw new \Exception('Error creating Bitacoras.');
+            }
+
+            return response()->json(['message' => 'User status changed successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

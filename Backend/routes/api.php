@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BitacorasController;
+use App\Http\Controllers\EnlacesController;
+use App\Http\Controllers\PaginasController;
+use App\Http\Controllers\PersonasController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Http\Request;
@@ -37,3 +41,10 @@ Route::group([
     Route::resource('users', UsuariosController::class);
 });
 Route::resource('roles', RolesController::class);
+Route::resource('paginas', PaginasController::class);
+Route::resource('bitacoras', BitacorasController::class);
+Route::resource('enlaces', EnlacesController::class);
+Route::put('users/{id}/estado', [UsuariosController::class, 'Acceso']);
+
+
+

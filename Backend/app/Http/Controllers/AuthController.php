@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
-
+use Tymon\JWTAuth\Facades\JWTFactory;
 
 class AuthController extends Controller
 {
@@ -80,10 +80,12 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $user = auth()->user();
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => JWTFactory::getTTL() * 60,
+            'user'=>$user
         ]);
     }
 

@@ -13,16 +13,9 @@ return new class extends Migration
     {
         Schema::create('bitacoras', function (Blueprint $table) {
             $table->id();
-            $table->string('bitacora');
-            $table->unsignedBigInteger('users_id');
             $table->date('fecha');
             $table->time('hora');
-            $table->string('ip');
-            $table->string('so');
             $table->string('navegador');
-            $table->string('usuario');
-
-            $table->foreign('users_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

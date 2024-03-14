@@ -15,12 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('primer_nombre');
             $table->string('segundo_nombre')->nullable();
-            $table->string('primera_pellido');
-            $table->string('segundoa_pellido')->nullable();
+            $table->string('primer_apellido');
+            $table->string('segundo_apellido')->nullable();
             $table->timestamp('fechacreacion')->useCurrent();
             $table->timestamp('fechamodificacion')->useCurrent();
-            $table->string('usuariocreacion');
-            $table->string('usuariomodificacion');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bitacoras;
 use App\Models\Roles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -30,34 +31,33 @@ class RolesController extends Controller
      */
     public function store(Request $request)
 {
-    // Validar los datos del formulario
-    $request->validate([
-        'rol' => 'required|string|max:255',
-    ]);
+    try {
+        $request->validate([
+            'rol' => 'required',
+        ]);
+        $rol = Roles::create($request->all());
+        $bitacora = Bitacoras::add("new rol was created with id {$rol->id} ");
 
-    // Verificar si el usuario está autenticado antes de acceder a su nombre
-    $user = $request->user();
-    $userName = $user ? $user->name : 'Unknown';
+        if(!$bitacora){
+            throw new \Exception('Error creating.');
+        }
+        return response()->json(['message' => 'Role successfully', 'role' => $rol]);
+    
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+    
 
-    $rol = new Roles();
-    $rol->rol = $request->input('rol');
-    $rol->usuariocreacion = $userName;
-    $rol->usuariomodificacion = $userName; 
-
-    $rol->save();
-
-    return response()->json([
-        'message' => 'Rol creado exitosamente',
-        'data' => $rol, // Devuelve el objeto de modelo creado si lo necesitas en el cliente
-    ], 201);
+    
 }
 
     /**
      * Display the specified resource.
      */
-    public function show(Roles $roles)
+    public function show(Roles $id)
     {
-        //
+        $rol = Roles::findOrFail($id);
+        return response()->json($rol);
     }
 
     /**
@@ -71,27 +71,44 @@ class RolesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Roles $role)
+    public function update(Request $request, Roles $id)
     {
-        $validator = Validator::make($request->all(), [
-            'rol' => 'required|string|max:255',
-            // Agrega aquí más reglas de validación según tus requisitos
-        ]);
+        try {
+            $request->validate([
+                "rol"=> "required|unique:roles,rol". $id,
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            $role = Roles::findOrFail($id);
+            $role->update($request->all());
+            $bitacora = Bitacoras::add("a rol with id {$role->id} was updated");
+            if(!$bitacora){
+                throw new \Exception('Error creating.');
+            }
+            return response()->json(['message' => 'Role updated successfully', 'role' => $role]);
+
+        } catch (\Exception $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
         }
-
-        $role->update($request->all());
-        return response()->json(['message' => 'Role updated successfully', 'role' => $role]);
+        
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Roles $role)
-    {
+    public function destroy(Roles $id)
+    {   try {
+        $role = Roles::findOrFail($id);
         $role->delete();
+        $bitacora = Bitacoras::add("a rol with id {$id} was deleted");
+            if(!$bitacora){
+                throw new \Exception('Error creating.');
+            }
         return response()->json(['message' => 'Role deleted successfully']);
+
+
+    } catch (\Exception $th) {
+        return response()->json(['error' => $th->getMessage()], 500);
+    }
+       
     }
 }

@@ -5,20 +5,24 @@ import Swal from "sweetalert2";
 
 const AddUserModal = ({ isOpen, closeModal, addUser }) => {
   const [userData, setUserData] = useState({
-    username: "",
+    name: "",
     email: "",
-    password: "",
-    empresa: "",
+    // password: "",
+    primer_apellido: "",
+    segundo_apellido: "",
+
     telefono: "",
-    role: "",
-    status: "",
+    rol_id: "",
+    estado: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
+    // Convertir el valor de rol_id a un número si corresponde
+    const newValue = name === 'rol_id' ? parseInt(value, 10) : value;
+    setUserData({ ...userData, [name]: newValue });
     // Verificar si el valor está vacío y agregar o quitar la clase input-error en consecuencia
-    if (value === "") {
+    if (newValue === "") {
       e.target.classList.add("input-error");
     } else {
       e.target.classList.remove("input-error");
@@ -78,11 +82,11 @@ const AddUserModal = ({ isOpen, closeModal, addUser }) => {
               </label>
               <input
                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  userData.username === "" && "input-error"
+                  userData.name === "" && "input-error"
                 }`}
                 type="text"
-                name="username"
-                value={userData.username}
+                name="name"
+                value={userData.name}
                 onChange={handleChange}
               />
             </div>
@@ -95,7 +99,7 @@ const AddUserModal = ({ isOpen, closeModal, addUser }) => {
               </label>
               <input
                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  userData.username === "" && "input-error"
+                  userData.email === "" && "input-error"
                 }`} 
                 placeholder="ejemplo@gmail.com"
                 type="text"
@@ -104,7 +108,7 @@ const AddUserModal = ({ isOpen, closeModal, addUser }) => {
                 onChange={handleChange}
               />
             </div>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="password"
@@ -113,11 +117,28 @@ const AddUserModal = ({ isOpen, closeModal, addUser }) => {
               </label>
               <input
                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  userData.username === "" && "input-error"
+                  userData.password === "" && "input-error"
                 }`}
                 type="password"
                 name="password"
                 value={userData.password}
+                onChange={handleChange}
+              />
+            </div> */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="empresa"
+              >
+                 Primer apellido:
+              </label>
+              <input
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                  userData.primer_apellido === "" && "input-error"
+                }`}
+                type="text"
+                name="primer_apellido"
+                value={userData.primer_apellido}
                 onChange={handleChange}
               />
             </div>
@@ -126,18 +147,36 @@ const AddUserModal = ({ isOpen, closeModal, addUser }) => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="empresa"
               >
-                Nombre de Empresa:
+                 segundo apellido:
               </label>
               <input
                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  userData.username === "" && "input-error"
+                  userData.segundo_apellido === "" && "input-error"
                 }`}
                 type="text"
-                name="empresa"
-                value={userData.empresa}
+                name="segundo_apellido"
+                value={userData.segundo_apellido}
                 onChange={handleChange}
               />
             </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="empresa"
+              >
+                  fecha de nacimiento:
+              </label>
+              <input
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                  userData.fecha_nacimiento === "" && "input-error"
+                }`}
+                type="date"
+                name="fecha_nacimiento"
+                value={userData.fecha_nacimiento}
+                onChange={handleChange}
+              />
+            </div>
+            
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
@@ -147,7 +186,7 @@ const AddUserModal = ({ isOpen, closeModal, addUser }) => {
               </label>
               <input
                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  userData.username === "" && "input-error"
+                  userData.telefono === "" && "input-error"
                 }`}
                 type="text"
                 name="telefono"
@@ -158,28 +197,24 @@ const AddUserModal = ({ isOpen, closeModal, addUser }) => {
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="role"
+                htmlFor="telefono"
               >
-                Papel:
+                 Papel:
               </label>
-              <select
+              <input
                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  userData.username === "" && "input-error"
+                  userData.rol_id === "" && "input-error"
                 }`}
-                name="role"
-                value={userData.role}
+                type="number"
+                name="rol_id"
+                value={userData.rol_id}
                 onChange={handleChange}
-              >
-                <option value="">Seleciona el papel del usuario</option>
-                <option value="Administrador">Administrador</option>
-                <option value="RespVentasTiendas">RespVentasTiendas</option>
-                <option value="SupervisorComercial">SupervisorComercial</option>
-              </select>
+              />
             </div>
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="status"
+                htmlFor="estado"
               >
                 Estado:
               </label>
@@ -187,13 +222,13 @@ const AddUserModal = ({ isOpen, closeModal, addUser }) => {
                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
                   userData.username === "" && "input-error"
                 }`}
-                name="status"
-                value={userData.status}
+                name="estado"
+                value={userData.estado}
                 onChange={handleChange}
               >
                 <option value="">Seleciona el estado del usuario</option>
-                <option value="active">active</option>
-                <option value="inactive">inactive</option>
+                <option value="activo">activo</option>
+                <option value="inactivo">inactivo</option>
               </select>
             </div>
           </div>

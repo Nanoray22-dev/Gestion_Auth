@@ -16,6 +16,7 @@ function UsersList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage, setUsersPerPage] = useState(10);
+  const [, setRoles] = useState([])
 
   const getPdf = async () => {
     const response = await axios.get(`http://127.0.0.1:8000/api/auth/users`, {
@@ -30,6 +31,7 @@ function UsersList() {
 
   useEffect(() => {
     fetchUsers();
+    fetchRoles();
   }, []);
 
   const fetchUsers = async () => {
@@ -39,6 +41,14 @@ function UsersList() {
     } catch (error) {
       console.log("Error fetching users", error);
       
+    }
+  };
+  const fetchRoles = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/roles");
+      setRoles(response.data);
+    } catch (error) {
+      console.log("Error fetching roles", error);
     }
   };
 
@@ -58,7 +68,7 @@ function UsersList() {
     try {
       // Verificar si el nombre de usuario ya existe
       const existingUser = users.find(
-        (user) => user.username === userData.username
+        (user) => user.name === userData.name
       );
       if (existingUser) {
         // Mostrar SweetAlert de error
@@ -313,6 +323,7 @@ function UsersList() {
                 />
               </th>
               <th className="px-4 py-2">Nombre de Usuario</th>
+              <th className="px-4 py-2">apellido</th>
               <th className="px-4 py-2">Email</th>
               <th className="px-4 py-2">Fecha</th>
               <th className="px-4 py-2">Número de Teléfono</th>
@@ -335,8 +346,9 @@ function UsersList() {
                 <td className="border px-4 py-2 text-center">
                   {user.name}
                 </td>
+                <td className="border px-4 py-2 text-center">{user.primer_apellido} {user.segundo_apellido}</td>
                 <td className="border px-4 py-2 text-center">{user.email}</td>
-                <td className="border px-4 py-2 text-center">{user.fecha}</td>
+                <td className="border px-4 py-2 text-center">{user.fecha_nacimiento}</td>
                 <td className="border px-4 py-2 text-center">
                   {user.telefono}
                 </td>

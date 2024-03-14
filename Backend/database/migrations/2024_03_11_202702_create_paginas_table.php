@@ -13,16 +13,11 @@ return new class extends Migration
     {
         Schema::create('paginas', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('fechacreacion')->useCurrent();
-            $table->timestamp('fechamodificacion')->useCurrent();
-            $table->string('usuariocreacion');
-            $table->string('usuariomodificacion');
             $table->string('url');
-            $table->string('estado');
             $table->string('nombre');
-            $table->string('descripcion')->nullable();
+            $table->text('descripcion');
             $table->string('icono')->nullable();
-            $table->string('tipo')->nullable();
+            $table->date('fecha')->nullable();
             $table->timestamps();
         });
     }

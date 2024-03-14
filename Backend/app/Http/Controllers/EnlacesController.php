@@ -12,7 +12,8 @@ class EnlacesController extends Controller
      */
     public function index()
     {
-        //
+        $enlaces = Enlaces::all();
+        return response()->json($enlaces);
     }
 
     /**
@@ -20,7 +21,7 @@ class EnlacesController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -28,15 +29,17 @@ class EnlacesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $enlace = Enlaces::create($request->all());
+        return response()->json($enlace, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Enlaces $enlaces)
+    public function show(Enlaces $id)
     {
-        //
+        $enlace = Enlaces::findOrFail($id);
+        return response()->json($enlace);
     }
 
     /**
@@ -50,16 +53,21 @@ class EnlacesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Enlaces $enlaces)
+    public function update(Request $request, $id)
     {
-        //
+        $enlace = Enlaces::findOrFail($id);
+        $enlace->update($request->all());
+        return response()->json($enlace, 200);
     }
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Enlaces $enlaces)
+    public function destroy(Enlaces $id)
     {
-        //
+
+        $enlace = Enlaces::findOrFail($id);
+        $enlace->delete();
+        return response()->json(null, 204);
+
     }
 }
