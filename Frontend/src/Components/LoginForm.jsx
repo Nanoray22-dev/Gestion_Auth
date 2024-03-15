@@ -4,13 +4,14 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { AiOutlineTwitter } from "react-icons/ai";
 import { BiLogoFacebook } from "react-icons/bi";
 import { useUser } from './UserContex';
+import Swal from 'sweetalert2';
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
-    const [, setErrorMessage] = useState('');
+    // const [, setErrorMessage] = useState('');
     const navigate = useNavigate();
     const {setUser} = useUser();
 
@@ -27,20 +28,31 @@ const LoginForm = () => {
         const { email, password } = formData;
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/auth/login', { email, password });
-            console.log(response)
             if (response.data?.access_token) {
-                setUser(response.data.user)
-                console.log(setUser)
-                navigate('/home'); 
+                setUser(response.data.user);
+                navigate('/home');
             } else {
-                setErrorMessage('Invalid email or password');
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Credentials',
+                    text: 'Invalid email or password.',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
             }
         } catch (error) {
             console.error('Authentication error:', error);
-            setErrorMessage('Authentication error. Please try again later.');
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Authentication Error',
+                text: 'An error occurred during authentication. Please try again later.',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
         }
     };
-
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
     if (user && user.authenticated) {
