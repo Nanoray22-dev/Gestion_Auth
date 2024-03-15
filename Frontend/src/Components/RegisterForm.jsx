@@ -34,7 +34,7 @@ const RegisterForm = () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Redirigir al usuario al formulario de inicio de sesión después del registro
-                    navigate('/login');
+                    navigate( );
                 }
             });
         } catch (error) {
