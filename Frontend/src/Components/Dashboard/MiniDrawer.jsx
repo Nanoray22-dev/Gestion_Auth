@@ -17,8 +17,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 // import InboxIcon from "@mui/icons-material/MoveToInbox";
 // import MailIcon from "@mui/icons-material/Mail";
-import { Outlet } from "react-router";
-import { NavLink } from "react-router-dom";
+import {  Outlet } from "react-router";
+import { NavLink, useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import StarIcon from "@mui/icons-material/Star";
 // import EmailIcon from '@mui/icons-material/Email';
@@ -33,6 +33,7 @@ import ContrastIcon from '@mui/icons-material/Contrast';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import HelpIcon from '@mui/icons-material/Help';
 import ContactMailIcon from '@mui/icons-material/ContactMail'
+import { useUser } from "../UserContex";
 
 const drawerWidth = 240;
 
@@ -135,7 +136,14 @@ const iconMap = {
 };
 
 export default function MiniDrawer() {
-  //   const theme = useTheme();
+
+const navigate = useNavigate();
+const {user} = useUser();
+// if (!user || !user.authenticated || !user.authorized) {
+//   // Si el usuario no está autenticado o autorizado, redirige a la página de inicio de sesión
+//   return <Navigate to="/login" />;
+// }
+
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -147,7 +155,8 @@ export default function MiniDrawer() {
   };
 
   const handleLogout = () => {
-    "";
+    localStorage.removeItem("user");
+    navigate('/login');
   };
 
   return (
@@ -169,7 +178,8 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
 
-          <h2>Bookmarks</h2>
+          {user && <h1>Bienvenido, {user.name}!</h1>}
+
 
           {/* Agrega el botón de logout */}
           <IconButton
@@ -178,7 +188,10 @@ export default function MiniDrawer() {
             onClick={handleLogout} // Define una función handleLogout para manejar el logout
             sx={{ marginLeft: "auto" }} // Estilo para alinear el botón a la derecha del navbar
           >
-            <ExitToAppIcon /> {/* Importa y utiliza el icono ExitToAppIcon */}
+
+             <ExitToAppIcon />
+
+            {/* Importa y utiliza el icono ExitToAppIcon */}
           </IconButton>
         </Toolbar>
       </AppBar>

@@ -2,17 +2,15 @@ import { useState } from "react";
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
 
-function EditUserModal({ isOpen, user, onSave, onClose }) {
+function EditModalPage({ isOpen, user, onSave, onClose }) {
   const [userData, setUserData] = useState({
-    name: user.name || '',
-    email: user.email || '',
-    primer_apellido: user.primer_apellido || '',
-    segundo_apellido: user.segundo_apellido || '',
-    fecha_nacimiento: user.fecha_nacimiento || '',
+    nombre: user.nombre || '',
+    url: user.url || '',
+    descripcion: user.descripcion || '',
+    fecha: user.fecha || '',
 
-    telefono: user.telefono || '',
-    rol_id: user.rol_id || '',
-    estado: user.estado || ''
+    icono: user.icono || '',
+    
   });
 
   const handleChange = (e) => {
@@ -54,84 +52,72 @@ function EditUserModal({ isOpen, user, onSave, onClose }) {
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
           <div className="grid grid-cols-2 gap-4">
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                Nombre de Usuario:
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">
+                Nombre:
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                name="name"
-                value={userData.name}
+                name="nombre"
+                value={userData.nombre}
                 onChange={handleChange}
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                Email:
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="url">
+                url:
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                name="email"
-                value={userData.email}
+                name="url"
+                value={userData.url}
                 onChange={handleChange}
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="empresa">
-                Primer Apellido
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descripcion">
+                descripcion
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                name="primer_apellido"
-                value={userData.primer_apellido}
+                name="descripcion"
+                value={userData.descripcion}
                 onChange={handleChange}
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="empresa">
-                Segundo Apellido
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                name="segundo_apellido"
-                value={userData.segundo_apellido}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="telefono">
-                Número de Teléfono:
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                name="telefono"
-                value={userData.telefono}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="telefono">
-                Fecha de nacimiento
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fecha">
+                Fecha
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="date"
-                name="fecha_nacimiento"
-                value={userData.fecha_nacimiento}
+                name="fecha"
+                value={userData.fecha}
                 onChange={handleChange}
               />
             </div>
             <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="icono">
+                icono
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                name="icono"
+                value={userData.icono}
+                onChange={handleChange}
+              />
+            </div>
+            {/* <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
                 Rol:
               </label>
               <select
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                name="rol_id"
+                name="role"
                 value={userData.rol_id}
                 onChange={handleChange}
               >
@@ -140,8 +126,8 @@ function EditUserModal({ isOpen, user, onSave, onClose }) {
                 <option value="2">Ventas</option>
                 <option value="3">supervisor</option>
               </select>
-            </div>
-            <div className="mb-4">
+            </div> */}
+            {/* <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="estado"
@@ -158,7 +144,7 @@ function EditUserModal({ isOpen, user, onSave, onClose }) {
                 <option value="activo">activo</option>
                 <option value="inactivo">inactivo</option>
               </select>
-            </div>
+            </div> */}
           </div>
           <button
             type="submit"
@@ -178,11 +164,11 @@ function EditUserModal({ isOpen, user, onSave, onClose }) {
   );
 }
 
-EditUserModal.propTypes = {
+EditModalPage.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   user: PropTypes.object.isRequired,
   onSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
-export default EditUserModal;
+export default EditModalPage;

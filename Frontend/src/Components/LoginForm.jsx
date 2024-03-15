@@ -1,17 +1,18 @@
-import { useState } from 'react';
-import './style.css';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { AiOutlineTwitter } from "react-icons/ai";
+import { BiLogoFacebook } from "react-icons/bi";
+import { useUser } from './UserContex';
 
 const LoginForm = () => {
-    const [isSignUp, setIsSignUp] = useState(false);
     const [formData, setFormData] = useState({
-        name: '',
         email: '',
         password: ''
     });
-    const [errorMessage, setErrorMessage] = useState('');
+    const [, setErrorMessage] = useState('');
     const navigate = useNavigate();
+    const {setUser} = useUser();
 
     const handleChange = (e) => {
         setFormData({
@@ -23,19 +24,16 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const { email, password, name } = formData;
+        const { email, password } = formData;
         try {
-            if (isSignUp) {
-                await axios.post('http://127.0.0.1:8000/api/auth/register', { name, email, password });
-                console.log('Registration successful');
+            const response = await axios.post('http://127.0.0.1:8000/api/auth/login', { email, password });
+            console.log(response)
+            if (response.data?.access_token) {
+                setUser(response.data.user)
+                console.log(setUser)
+                navigate('/home'); 
             } else {
-                const response = await axios.post('http://127.0.0.1:8000/api/auth/login', { email, password });
-                console.log(response)
-                if (response.data?.access_token) {
-                    navigate('/home'); 
-                } else {
-                    setErrorMessage('Invalid email or password');
-                }
+                setErrorMessage('Invalid email or password');
             }
         } catch (error) {
             console.error('Authentication error:', error);
@@ -43,62 +41,98 @@ const LoginForm = () => {
         }
     };
 
-    const toggleForm = () => {
-        setIsSignUp(!isSignUp);
-    };
-
-    
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.authenticated) {
+      // Si hay una sesión activa, redirigir al usuario a la página de inicio
+      navigate("/home");
+    }
+    },[navigate])
 
     return (
-        <div className={`container ${isSignUp ? 'active' : ''}`}>
-            <div className="form-container sign-up">
+        <section className="h-screen flex flex-col md:flex-row justify-center space-y-10 md:space-y-0 md:space-x-16 items-center my-2 mx-5 md:mx-0 md:my-0">
+            <div className="md:w-1/3 max-w-sm">
+                <img
+                    src="https://tecdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                    alt="Sample image"
+                />
+            </div>
+            <div className="md:w-1/3 max-w-sm">
                 <form onSubmit={handleSubmit}>
-                    <h1>Create Account</h1>
-                    <div className="social-icons">
-                        <a href="#" className="icon"><i className="fab fa-google-plus-g"></i></a>
-                        <a href="#" className="icon"><i className="fab fa-facebook-f"></i></a>
-                        <a href="#" className="icon"><i className="fab fa-github"></i></a>
-                        <a href="#" className="icon"><i className="fab fa-linkedin-in"></i></a>
+                    <div className="text-center md:text-left">
+                        <label className="mr-1">Sign in with</label>
+                        <button
+                            type="button"
+                            className="mx-1 h-9 w-9  rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-[0_4px_9px_-4px_#3b71ca]"
+                        >
+                            <BiLogoFacebook
+                                size={20}
+                                className="flex justify-center items-center w-full"
+                            />
+                        </button>
+                        <button
+                            type="button"
+                            className="inlne-block mx-1 h-9 w-9 rounded-full bg-blue-600 hover:bg-blue-700 uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca]"
+                        >
+                            <AiOutlineTwitter
+                                size={20}
+                                className="flex justify-center items-center w-full"
+                            />
+                        </button>
                     </div>
-                    <span>or use your email for registration</span>
-                    <input type="text" name='name' placeholder="Name" value={formData.name} onChange={handleChange} />
-                    <input type="email" placeholder="Email" name='email' value={formData.email} onChange={handleChange} />
-                    <input type="password" placeholder="Password" name='password' value={formData.password} onChange={handleChange} />
-                    <button type='submit'>Sign Up</button>
+                    <div className="my-5 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
+                        <p className="mx-4 mb-0 text-center font-semibold text-slate-500">
+                            Or
+                        </p>
+                    </div>
+                    <input
+                        className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
+                        type="text"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Email Address"
+                    />
+                    <input
+                        className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Password"
+                    />
+                    <div className="mt-4 flex justify-between font-semibold text-sm">
+                        <label className="flex text-slate-500 hover:text-slate-600 cursor-pointer">
+                            <input className="mr-1" type="checkbox" />
+                            <span>Remember Me</span>
+                        </label>
+                        <a
+                            className="text-blue-600 hover:text-blue-700 hover:underline hover:underline-offset-4"
+                            href="#"
+                        >
+                            Forgot Password?
+                        </a>
+                    </div>
+                    <div className="text-center md:text-left">
+                        <button
+                            className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
+                            type="submit"
+                        >
+                            Login
+                        </button>
+                    </div>
+                    <div className="mt-4 font-semibold text-sm text-slate-500 text-center md:text-left">
+                        Don&apos;t have an account?{" "}
+                        <NavLink to={'/register'}
+                            className="text-red-600 hover:underline hover:underline-offset-4"
+                            
+                        >
+                            Register
+                        </NavLink>
+                    </div>
                 </form>
             </div>
-            <div className="form-container sign-in">
-                <form onSubmit={handleSubmit}>
-                    <h1>Sign In</h1>
-                    <div className="social-icons">
-                        <a href="#" className="icon"><i className="fab fa-google-plus-g"></i></a>
-                        <a href="#" className="icon"><i className="fab fa-facebook-f"></i></a>
-                        <a href="#" className="icon"><i className="fab fa-github"></i></a>
-                        <a href="#" className="icon"><i className="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <span>or use your email and password</span>
-                    <input type="email" placeholder="Email" name='email' value={formData.email} onChange={handleChange} />
-                    <input type="password" placeholder="Password" name='password' value={formData.password} onChange={handleChange} />
-                    <span className="error-message">{errorMessage}</span>
-                    <a href="#">Forget Your Password?</a>
-                    <button type='submit' onClick={()  => {}}>Sign In</button>
-                </form>
-            </div>
-            <div className="toggle-container">
-                <div className="toggle">
-                    <div className="toggle-panel toggle-left">
-                        <h1>Welcome Back!</h1>
-                        <p>Enter your personal details to use all site features</p>
-                        <button className="hidden" onClick={toggleForm}>Sign In</button>
-                    </div>
-                    <div className="toggle-panel toggle-right">
-                        <h1>Hello, Friend!</h1>
-                        <p>Register with your personal details to use all site features</p>
-                        <button className="hidden" onClick={toggleForm}>Sign Up</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
     );
 };
 

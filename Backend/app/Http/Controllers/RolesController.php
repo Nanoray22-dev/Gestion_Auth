@@ -95,20 +95,20 @@ class RolesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Roles $id)
-    {   try {
-        $role = Roles::findOrFail($id);
-        $role->delete();
-        $bitacora = Bitacoras::add("a rol with id {$id} was deleted");
-            if(!$bitacora){
-                throw new \Exception('Error creating.');
+    public function destroy($id)
+    {
+        try {
+            $role = Roles::findOrFail($id);
+            $role->delete();
+            $bitacora = Bitacoras::add("A rol with id {$id} was deleted");
+            
+            if (!$bitacora) {
+                throw new \Exception('Error creating bitacora entry.');
             }
-        return response()->json(['message' => 'Role deleted successfully']);
-
-
-    } catch (\Exception $th) {
-        return response()->json(['error' => $th->getMessage()], 500);
-    }
-       
+            
+            return response()->json(['message' => 'Role deleted successfully']);
+        } catch (\Exception $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
     }
 }

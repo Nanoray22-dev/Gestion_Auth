@@ -1,11 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import axios from "axios";
+import { useUser } from "../UserContex";
+
+
 
 function Dashboard() {
+
+// if (!user || !user.authenticated || !user.authorized) {
+//   // Si el usuario no está autenticado o autorizado, redirige a la página de inicio de sesión
+//   return <Navigate to="/login" />;
+// }
   const lineChartRef = useRef(null);
   const barChartRef = useRef(null);
-
+const {user} = useUser();
   const [userData, setUserData] = useState([]);
   
   useEffect(() => {
@@ -90,6 +98,7 @@ function Dashboard() {
   return (
     <>
       <div className="container mx-auto">
+      {user && <h1>Bienvenido, {user.name}!</h1>}
         <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
 
         {/* Cards */}
