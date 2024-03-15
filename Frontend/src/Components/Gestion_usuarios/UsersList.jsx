@@ -16,7 +16,7 @@ function UsersList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage, setUsersPerPage] = useState(10);
-  const [, setRoles] = useState([])
+  const [roleNames, setRoleNames] = useState({});
 
   const getPdf = async () => {
     const response = await axios.get(`http://127.0.0.1:8000/api/auth/users`, {
@@ -40,15 +40,19 @@ function UsersList() {
       setUsers(response.data);
     } catch (error) {
       console.log("Error fetching users", error);
-      
     }
   };
   const fetchRoles = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/roles");
-      setRoles(response.data);
+      const roleData = response.data.roles;
+      const roleNamesData = {};
+      roleData.forEach((role) => {
+        roleNamesData[role.id] = role.rol;
+      });
+      setRoleNames(roleNamesData);
     } catch (error) {
-      console.log("Error fetching roles", error);
+      console.error("Error fetching role names:", error);
     }
   };
 
@@ -67,9 +71,7 @@ function UsersList() {
   const addUser = async (userData) => {
     try {
       // Verificar si el nombre de usuario ya existe
-      const existingUser = users.find(
-        (user) => user.name === userData.name
-      );
+      const existingUser = users.find((user) => user.name === userData.name);
       if (existingUser) {
         // Mostrar SweetAlert de error
         Swal.fire({
@@ -87,7 +89,7 @@ function UsersList() {
         userData
       );
 
-      console.log("Respuesta del servidor:", response.data); 
+      console.log("Respuesta del servidor:", response.data);
 
       if (response.status === 201) {
         // Mostrar SweetAlert de éxito
@@ -124,7 +126,7 @@ function UsersList() {
         });
       }
       closeEditModal();
-      fetchUsers(); 
+      fetchUsers();
     } catch (error) {
       console.error("Error al actualizar usuario:", error.message);
     }
@@ -154,8 +156,7 @@ function UsersList() {
   };
 
   const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()
-    )
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -343,16 +344,23 @@ function UsersList() {
                   />
                 </td>
 
+                <td className="border px-4 py-2 text-center">{user.name}</td>
                 <td className="border px-4 py-2 text-center">
-                  {user.name}
+                  {user.primer_apellido} {user.segundo_apellido}
                 </td>
-                <td className="border px-4 py-2 text-center">{user.primer_apellido} {user.segundo_apellido}</td>
                 <td className="border px-4 py-2 text-center">{user.email}</td>
-                <td className="border px-4 py-2 text-center">{user.fecha_nacimiento}</td>
+                <td className="border px-4 py-2 text-center">
+                  {user.fecha_nacimiento}
+                </td>
                 <td className="border px-4 py-2 text-center">
                   {user.telefono}
                 </td>
-                <td className="border px-4 py-2 text-center">{user.rol_id}</td>
+                <td className="border px-4 py-2 text-center">
+                  {" "}
+                  {roleNames[user.rol_id]
+                    ? roleNames[user.rol_id]
+                    : "(no asignado)"}
+                </td>
                 <td className={`border px-4 py-2 text-center`}>
                   <span
                     className={`inline-block bg-gray-200 rounded px-4 py-1 border border-gray-300 ${

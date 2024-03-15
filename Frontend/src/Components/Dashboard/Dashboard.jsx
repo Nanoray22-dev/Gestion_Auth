@@ -3,28 +3,44 @@ import Chart from "chart.js/auto";
 import axios from "axios";
 import { useUser } from "../UserContex";
 
-
-
 function Dashboard() {
-
-// if (!user || !user.authenticated || !user.authorized) {
-//   // Si el usuario no está autenticado o autorizado, redirige a la página de inicio de sesión
-//   return <Navigate to="/login" />;
-// }
+  // if (!user || !user.authenticated || !user.authorized) {
+  //   // Si el usuario no está autenticado o autorizado, redirige a la página de inicio de sesión
+  //   return <Navigate to="/login" />;
+  // }
   const lineChartRef = useRef(null);
   const barChartRef = useRef(null);
-const {user} = useUser();
+  const { user } = useUser();
   const [userData, setUserData] = useState([]);
-  
+  const [roleNames, setRoleNames] = useState({});
+
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/auth/users')
-      .then(response => {
+    axios
+      .get("http://127.0.0.1:8000/api/auth/users")
+      .then((response) => {
         setUserData(response.data);
       })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
       });
+
+    
+      fecthRoles();
   }, []);
+
+  const fecthRoles = async () =>{
+   try {
+    const response = await axios.get("http://127.0.0.1:8000/api/roles");
+    const roleData = response.data.roles; 
+    const roleNamesData = {};
+    roleData.forEach((role) => {
+      roleNamesData[role.id] = role.rol; 
+    });
+    setRoleNames(roleNamesData); 
+  } catch (error) {
+    console.error("Error fetching role names:", error);
+  }
+  }
 
   useEffect(() => {
     const createChart = (chartRef, data, type) => {
@@ -93,12 +109,10 @@ const {user} = useUser();
     createChart(barChartRef, barChartData, "bar");
   }, []);
 
-
-
   return (
     <>
       <div className="container mx-auto">
-      {user && <h1>Bienvenido, {user.name}!</h1>}
+        {user && <h1>Bienvenido, {user.name}!</h1>}
         <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
 
         {/* Cards */}
@@ -144,27 +158,42 @@ const {user} = useUser();
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   ID
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Name
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Email
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Role
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {userData.map(user => (
+              {userData.map((user) => (
                 <tr key={user.id}>
                   <td className="px-6 py-4 whitespace-nowrap">{user.id}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{user.rol_id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {" "}
+                    {roleNames[user.rol_id] ? roleNames[user.rol_id] : "(no asignado)"}
+                  </td>
                 </tr>
               ))}
             </tbody>
